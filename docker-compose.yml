@@ -1,0 +1,38 @@
+
+version: '3.8'
+services:
+  app:
+    container_name: todo-container
+    build: .
+    ports:
+      - "8081:8080"  # Maps port 8081 on the host to port 8080 on the container
+    depends_on:
+      - mysqldb  # Ensures that the MySQL database is started before the app
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysqldb:3306/fullstack  # Ensure this matches the database name
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: complExPw17$
+    networks:
+      - app_network
+
+  mysqldb:
+    image: mysql:8.0
+    container_name: mysql-container
+    volumes:
+      - mysql_data:/var/lib/mysql  # Persists database data
+    environment:
+      MYSQL_ROOT_PASSWORD: complExPw17$
+      MYSQL_DATABASE: fullstack  # The name of the database to be created
+    ports:
+      - "3307:3306"  # Exposes MySQL on port 3307 of the host
+    networks:
+      - app_network
+
+volumes:
+  mysql_data:  # Defines a volume for MySQL data
+
+networks:
+  app_network:
+    driver: bridge  # Uses a bridge network for inter-container communication
+
+
